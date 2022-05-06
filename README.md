@@ -15,8 +15,10 @@ Self-hosted, Node.js based analytics tool for those who care about privacy. Acke
 ![Ackee in a browser](https://s.electerious.com/images/ackee/readme.png)
 
 </div>
+
 ## Note
-[Add ACKEE_BASEURL configuration](https://github.com/electerious/Ackee/pull/317) based on [dodedodo/Ackee](https://github.com/dodedodo/Ackee/tree/baseurl)
+
+[Add ACKEE_BASEURL configuration](https://github.com/electerious/Ackee/pull/317) based on [dodedodo/Ackee/tree/baseurl](https://github.com/dodedodo/Ackee/tree/baseurl)
 
 to version update go to [git clone electerious/Ackee](https://github.com/electerious/Ackee)
 
