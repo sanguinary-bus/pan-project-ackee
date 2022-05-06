@@ -1,0 +1,17 @@
+{
+  "apps": [
+    {
+      "name": "pan-project-ackee",
+      "script": "src/index.js",
+      "instances": 1,
+      "autorestart": true,
+      "watch": false,
+      "time": true,
+      "max_memory_restart": "192M",
+      "exp_backoff_restart_delay": 300,
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}
