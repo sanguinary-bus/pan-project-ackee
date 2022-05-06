@@ -15,11 +15,21 @@ const customTracker = require('./utils/customTracker')
 const createApolloServer = require('./utils/createApolloServer')
 const { createMicroContext } = require('./utils/createContext')
 
-const index = readFile(resolve(__dirname, '../dist/index.html')).catch(signale.fatal)
-const favicon = readFile(resolve(__dirname, '../dist/favicon.ico')).catch(signale.fatal)
-const styles = readFile(resolve(__dirname, '../dist/index.css')).catch(signale.fatal)
-const scripts = readFile(resolve(__dirname, '../dist/index.js')).catch(signale.fatal)
-const tracker = readFile(resolve(__dirname, '../dist/tracker.js')).catch(signale.fatal)
+const index = readFile(resolve(__dirname, '../dist/index.html')).catch(
+  signale.fatal,
+)
+const favicon = readFile(resolve(__dirname, '../dist/favicon.ico')).catch(
+  signale.fatal,
+)
+const styles = readFile(resolve(__dirname, '../dist/index.css')).catch(
+  signale.fatal,
+)
+const scripts = readFile(resolve(__dirname, '../dist/index.js')).catch(
+  signale.fatal,
+)
+const tracker = readFile(resolve(__dirname, '../dist/tracker.js')).catch(
+  signale.fatal,
+)
 
 const handleMicroError = (error, res) => {
 	// This part is for micro errors and errors outside of GraphQL.
@@ -38,7 +48,9 @@ const handleMicroError = (error, res) => {
 		return send(res, 500, error.message)
 	}
 
-	signale.warn(hasOriginalError === true ? error.originalError.message : error.message)
+	signale.warn(
+    hasOriginalError === true ? error.originalError.message : error.message,
+	)
 	send(res, error.statusCode, error.message)
 }
 
@@ -75,7 +87,10 @@ const attachCorsHeaders = (fn) => (req, res) => {
 	if (matchingOrigin != null) {
 		res.setHeader('Access-Control-Allow-Origin', matchingOrigin)
 		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS')
-		res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Time-Zone')
+		res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, Time-Zone',
+		)
 		res.setHeader('Access-Control-Allow-Credentials', 'true')
 	}
 
@@ -97,7 +112,6 @@ const graphqlPath = `${ config.baseUrl }/api`
 const graphqlHandler = apolloServer.createHandler({ path: graphqlPath })
 
 const routes = [
-
 	get(`${ config.baseUrl }/`, async (req, res) => {
 		res.setHeader('Content-Type', 'text/html; charset=utf-8')
 		res.end(await index)
@@ -122,15 +136,19 @@ const routes = [
 		res.setHeader('Content-Type', 'text/javascript; charset=utf-8')
 		res.end(await tracker)
 	}),
-	customTracker.exists === true ? get(customTracker.url, async (req, res) => {
-		res.setHeader('Content-Type', 'text/javascript; charset=utf-8')
-		res.end(await tracker)
-	}) : undefined,
-	config.baseUrl !== '' ? get(config.baseUrl, (req, res) => {
-		res.statusCode = 302
-		res.setHeader('Location', `${ config.baseUrl }/`)
-		res.end()
-	}) : undefined,
+	customTracker.exists === true ?
+		get(`${ config.baseUrl }${ customTracker.url }`, async (req, res) => {
+			res.setHeader('Content-Type', 'text/javascript; charset=utf-8')
+			res.end(await tracker)
+		}) :
+		undefined,
+	config.baseUrl !== '' ?
+		get(config.baseUrl, (req, res) => {
+			res.statusCode = 302
+			res.setHeader('Location', `${ config.baseUrl }/`)
+			res.end()
+		}) :
+		undefined,
 
 	post(graphqlPath, graphqlHandler),
 	get(graphqlPath, graphqlHandler),
@@ -141,13 +159,6 @@ const routes = [
 	put('/*', notFound),
 	patch('/*', notFound),
 	del('/*', notFound),
-
 ].filter(Boolean)
 
-module.exports = micro(
-	attachCorsHeaders(
-		catchError(
-			router(...routes),
-		),
-	),
-)
+module.exports = micro(attachCorsHeaders(catchError(router(...routes))))
